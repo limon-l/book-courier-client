@@ -1,58 +1,22 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Star, ShoppingBag, ArrowRight } from "lucide-react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
+import Loading from "../Shared/Loading";
 
 const LatestBooks = () => {
-  const [books, setBooks] = useState([]);
   const axiosPublic = useAxiosPublic();
 
-  useEffect(() => {
-    const mockData = [
-      {
-        _id: "1",
-        title: "The Silent Patient",
-        author: "Alex Michaelides",
-        price: 12.99,
-        image:
-          "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop",
-        category: "Thriller",
-        rating: 4.8,
-      },
-      {
-        _id: "2",
-        title: "Educated",
-        author: "Tara Westover",
-        price: 15.5,
-        image:
-          "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop",
-        category: "Memoir",
-        rating: 4.9,
-      },
-      {
-        _id: "3",
-        title: "Becoming",
-        author: "Michelle Obama",
-        price: 18.0,
-        image:
-          "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=800&auto=format&fit=crop",
-        category: "Biography",
-        rating: 4.7,
-      },
-      {
-        _id: "4",
-        title: "Dune",
-        author: "Frank Herbert",
-        price: 14.99,
-        image:
-          "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=800&auto=format&fit=crop",
-        category: "Sci-Fi",
-        rating: 4.6,
-      },
-    ];
-    setBooks(mockData);
-  }, [axiosPublic]);
+  const { data: books = [], isLoading } = useQuery({
+    queryKey: ["latestBooks"],
+    queryFn: async () => {
+      const res = await axiosPublic.get("/books");
+      return res.data.slice(0, 4);
+    },
+  });
+
+  if (isLoading) return <Loading />;
 
   return (
     <section className="py-20 px-4 max-w-7xl mx-auto bg-white dark:bg-slate-900 transition-colors duration-300">
@@ -101,9 +65,6 @@ const LatestBooks = () => {
                 <Star size={14} className="text-amber-400 fill-amber-400" />
                 <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   {book.rating}
-                </span>
-                <span className="text-xs text-slate-400 ml-1">
-                  ({Math.floor(Math.random() * 50) + 10} reviews)
                 </span>
               </div>
               <div className="mt-auto flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-700">
