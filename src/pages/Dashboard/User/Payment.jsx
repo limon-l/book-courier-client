@@ -7,13 +7,18 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../components/Shared/Loading";
 
-const stripePromise = loadStripe(import.meta.env.VITE_Payment_Gateway_PK);
+const stripeKey = import.meta.env.VITE_Payment_Gateway_PK;
+const stripePromise = stripeKey ? loadStripe(stripeKey) : null;
 
 const Payment = () => {
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
 
-  const { data: order, isLoading } = useQuery({
+  const {
+    data: order,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["order-payment", id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/orders/${id}`);
@@ -22,6 +27,22 @@ const Payment = () => {
   });
 
   if (isLoading) return <Loading />;
+
+  if (!stripePromise) {
+    return (
+      <div className="text-center text-red-500 py-20 font-bold">
+        Error: Stripe Publishable Key is missing in configuration.
+      </div>
+    );
+  }
+
+  if (isError || !order) {
+    return (
+      <div className="text-center text-red-500 py-20 font-bold">
+        Error: Order information not found.
+      </div>
+    );
+  }
 
   return (
     <div>

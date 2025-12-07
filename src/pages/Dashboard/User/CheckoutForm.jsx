@@ -9,6 +9,8 @@ const CheckoutForm = ({ order }) => {
   const [error, setError] = useState("");
   const [clientSecret, setClientSecret] = useState("");
   const [transactionId, setTransactionId] = useState("");
+  const [processing, setProcessing] = useState(false);
+
   const stripe = useStripe();
   const elements = useElements();
   const axiosSecure = useAxiosSecure();
@@ -18,10 +20,19 @@ const CheckoutForm = ({ order }) => {
   const price = order.price;
 
   useEffect(() => {
-    if (price > 0) {
-      axiosSecure.post("/create-payment-intent", { price }).then((res) => {
-        setClientSecret(res.data.clientSecret);
-      });
+    if (price > 0.5) {
+      axiosSecure
+        .post("/create-payment-intent", { price })
+        .then((res) => {
+          console.log("Client Secret:", res.data.clientSecret);
+          setClientSecret(res.data.clientSecret);
+        })
+        .catch((err) => {
+          console.error("Payment Intent Error:", err);
+          setError("Failed to initialize payment. Please try again.");
+        });
+    } else {
+      setError("Invalid price amount. Cannot process payment.");
     }
   }, [axiosSecure, price]);
 
@@ -33,10 +44,11 @@ const CheckoutForm = ({ order }) => {
     }
 
     const card = elements.getElement(CardElement);
-
     if (card === null) {
       return;
     }
+
+    setProcessing(true);
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
@@ -44,11 +56,15 @@ const CheckoutForm = ({ order }) => {
     });
 
     if (error) {
+      console.error("Payment Method Error:", error);
       setError(error.message);
+      setProcessing(false);
+      return;
     } else {
       setError("");
     }
 
+    // Confirm Payment
     const { paymentIntent, error: confirmError } =
       await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -61,12 +77,14 @@ const CheckoutForm = ({ order }) => {
       });
 
     if (confirmError) {
+      console.error("Confirm Error:", confirmError);
       setError(confirmError.message);
+      setProcessing(false);
     } else {
       if (paymentIntent.status === "succeeded") {
+        console.log("Payment Succeeded:", paymentIntent.id);
         setTransactionId(paymentIntent.id);
 
-        // Save payment to DB
         const payment = {
           email: user.email,
           price: price,
@@ -88,13 +106,14 @@ const CheckoutForm = ({ order }) => {
           });
           navigate("/dashboard/invoices");
         }
+        setProcessing(false);
       }
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl mb-6">
+      <div className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl mb-6 bg-white dark:bg-slate-800">
         <CardElement
           options={{
             style: {
@@ -112,15 +131,21 @@ const CheckoutForm = ({ order }) => {
           }}
         />
       </div>
+
       <button
-        className="w-full btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl disabled:bg-slate-300"
+        className="w-full btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl disabled:bg-slate-300 disabled:cursor-not-allowed transition"
         type="submit"
-        disabled={!stripe || !clientSecret}>
-        Pay ${price}
+        disabled={!stripe || !clientSecret || processing}>
+        {processing ? "Processing..." : `Pay $${price}`}
       </button>
-      <p className="text-red-500 text-sm mt-4">{error}</p>
+
+      {error && (
+        <p className="text-red-500 text-sm mt-4 font-medium bg-red-50 p-2 rounded">
+          {error}
+        </p>
+      )}
       {transactionId && (
-        <p className="text-emerald-600 text-sm mt-4">
+        <p className="text-emerald-600 text-sm mt-4 font-medium">
           Transaction ID: {transactionId}
         </p>
       )}

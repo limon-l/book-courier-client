@@ -6,7 +6,7 @@ import useAuth from "../../hooks/useAuth";
 import Loading from "../../components/Shared/Loading";
 import OrderModal from "../../components/Books/OrderModal";
 import { Star, Heart, ArrowLeft, AlertTriangle } from "lucide-react";
-import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -28,27 +28,50 @@ const BookDetails = () => {
     retry: false,
   });
 
-  const handleAddToWishlist = () => {
+  const { data: wishlist = [], refetch: refetchWishlist } = useQuery({
+    queryKey: ["wishlist", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/wishlist?email=${user.email}`);
+      return res.data;
+    },
+  });
+
+  const wishlistItem = wishlist.find((item) => item.bookId === id);
+  const isInWishlist = !!wishlistItem;
+
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      return toast.error("Please login to manage wishlist");
+    }
     if (!book) return;
-    const wishlistItem = {
-      bookId: book._id,
-      email: user?.email,
-      title: book.title,
-      image: book.image,
-      author: book.author,
-      price: book.price,
-    };
-    axiosSecure.post("/wishlist", wishlistItem).then((res) => {
-      if (res.data.insertedId) {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Added to Wishlist",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+
+    try {
+      if (isInWishlist) {
+        const res = await axiosSecure.delete(`/wishlist/${wishlistItem._id}`);
+        if (res.data.deletedCount > 0) {
+          toast.success("Removed from Wishlist", { icon: "❌" });
+          refetchWishlist();
+        }
+      } else {
+        const newWishlistItem = {
+          bookId: book._id,
+          email: user?.email,
+          title: book.title,
+          image: book.image,
+          author: book.author,
+          price: book.price,
+        };
+        const res = await axiosSecure.post("/wishlist", newWishlistItem);
+        if (res.data.insertedId) {
+          toast.success("Added to Wishlist", { icon: "✅" });
+          refetchWishlist();
+        }
       }
-    });
+    } catch (err) {
+      toast.error("Failed to update wishlist");
+      console.error(err);
+    }
   };
 
   if (isLoading) return <Loading />;
@@ -103,9 +126,13 @@ const BookDetails = () => {
               {book.quantity > 0 ? "Order Now" : "Out of Stock"}
             </button>
             <button
-              onClick={handleAddToWishlist}
-              className="p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-slate-400 hover:text-red-500 hover:border-red-500 transition bg-white dark:bg-slate-900">
-              <Heart size={24} />
+              onClick={handleWishlistToggle}
+              className={`p-4 border-2 rounded-xl transition ${
+                isInWishlist
+                  ? "border-red-500 text-red-500 bg-red-50 dark:bg-red-900/20"
+                  : "border-slate-200 dark:border-slate-700 text-slate-400 hover:text-red-500 hover:border-red-500 bg-white dark:bg-slate-900"
+              }`}>
+              <Heart size={24} className={isInWishlist ? "fill-current" : ""} />
             </button>
           </div>
         </div>
