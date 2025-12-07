@@ -1,0 +1,92 @@
+import { useQuery } from "@tanstack/react-query";
+import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import SectionTitle from "../../../components/Shared/SectionTitle";
+import Swal from "sweetalert2";
+
+const ManageOrders = () => {
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
+  const { data: orders = [], refetch } = useQuery({
+    queryKey: ["librarian-orders", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/orders/librarian/${user.email}`);
+      return res.data;
+    },
+  });
+
+  const handleStatusChange = (id, newStatus) => {
+    axiosSecure
+      .patch(`/orders/status/${id}`, { status: newStatus })
+      .then((res) => {
+        if (res.data.modifiedCount > 0) {
+          refetch();
+          Swal.fire({
+            title: "Updated!",
+            text: `Order marked as ${newStatus}`,
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        }
+      });
+  };
+
+  return (
+    <div>
+      <SectionTitle
+        heading="Manage Orders"
+        subHeading="Process customer requests"
+      />
+      <div className="overflow-x-auto bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <table className="table w-full">
+          <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500">
+            <tr>
+              <th className="py-4 pl-6 text-left">Book</th>
+              <th className="py-4 text-left">Customer</th>
+              <th className="py-4 text-left">Current Status</th>
+              <th className="py-4 pr-6 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody className="text-slate-700 dark:text-slate-300">
+            {orders.map((order) => (
+              <tr
+                key={order._id}
+                className="border-b border-slate-100 dark:border-slate-800 last:border-none">
+                <td className="py-4 pl-6 font-medium">{order.bookTitle}</td>
+                <td className="py-4">
+                  <div className="text-sm">{order.userEmail}</div>
+                </td>
+                <td className="py-4">
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold capitalize ${
+                      order.status === "delivered"
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-blue-100 text-blue-800"
+                    }`}>
+                    {order.status}
+                  </span>
+                </td>
+                <td className="py-4 pr-6 text-right">
+                  <select
+                    defaultValue={order.status}
+                    onChange={(e) =>
+                      handleStatusChange(order._id, e.target.value)
+                    }
+                    className="select select-sm text-xs border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-800">
+                    <option value="pending">Pending</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default ManageOrders;

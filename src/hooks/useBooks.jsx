@@ -9,7 +9,6 @@ const useBooks = (search = "", sort = "", category = "") => {
     isLoading: loading,
     refetch,
   } = useQuery({
-    // Unique query key includes the parameters to trigger refetch on change
     queryKey: ["books", search, sort, category],
     queryFn: async () => {
       const res = await axiosPublic.get(
