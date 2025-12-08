@@ -61,7 +61,14 @@ const MyOrders = () => {
               <tr
                 key={order._id}
                 className="border-b border-slate-100 dark:border-slate-800 last:border-none">
-                <td className="py-4 pl-6 font-medium">{order.bookTitle}</td>
+                <td className="py-4 pl-6 font-medium">
+                  {order.bookTitle}
+                  {order.paymentStatus === "paid" && (
+                    <span className="block text-[10px] text-emerald-600 font-mono mt-1">
+                      Paid
+                    </span>
+                  )}
+                </td>
                 <td className="py-4">
                   {new Date(order.date).toLocaleDateString()}
                 </td>
@@ -82,18 +89,26 @@ const MyOrders = () => {
                 </td>
                 <td className="py-4 pr-6 text-right space-x-2">
                   {order.status === "pending" && (
-                    <>
-                      <button
-                        onClick={() => handleCancelOrder(order._id)}
-                        className="px-3 py-1.5 text-red-500 hover:bg-red-50 rounded-lg text-sm font-medium transition">
-                        Cancel
-                      </button>
+                    <button
+                      onClick={() => handleCancelOrder(order._id)}
+                      className="px-3 py-1.5 text-red-500 hover:bg-red-50 rounded-lg text-sm font-medium transition">
+                      Cancel
+                    </button>
+                  )}
+
+                  {order.status === "pending" &&
+                    order.paymentStatus !== "paid" && (
                       <Link
                         to={`/dashboard/payment/${order._id}`}
                         className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-bold hover:bg-emerald-700 transition">
                         Pay Now
                       </Link>
-                    </>
+                    )}
+
+                  {order.paymentStatus === "paid" && (
+                    <span className="text-emerald-600 font-bold text-sm px-2">
+                      Paid ✓
+                    </span>
                   )}
                 </td>
               </tr>
