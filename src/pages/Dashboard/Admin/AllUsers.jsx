@@ -69,25 +69,31 @@ const AllUsers = () => {
                 <td className="py-4 capitalize font-bold text-emerald-600">
                   {user.role || "user"}
                 </td>
-                <td className="py-4 pr-6 text-right space-x-2">
-                  {user.role === "admin" ? (
-                    "Admin"
-                  ) : (
-                    <button
-                      onClick={() => handleMakeAdmin(user)}
-                      className="bg-purple-50 text-purple-600 hover:bg-purple-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex-inline items-center gap-1">
-                      <Shield size={14} /> Make Admin
-                    </button>
-                  )}
-                  {user.role === "librarian" ? (
-                    "Librarian"
-                  ) : (
-                    <button
-                      onClick={() => handleMakeLibrarian(user)}
-                      className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex-inline items-center gap-1">
-                      <Users size={14} /> Make Librarian
-                    </button>
-                  )}
+                <td className="py-4 pr-6 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    {user.role === "admin" ? (
+                      <span className="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 px-3 py-1.5 rounded-lg cursor-not-allowed">
+                        Admin
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleMakeAdmin(user)}
+                        className="bg-purple-50 text-purple-600 hover:bg-purple-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                        <Shield size={14} /> Make Admin
+                      </button>
+                    )}
+                    {user.role === "librarian" ? (
+                      <span className="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 px-3 py-1.5 rounded-lg cursor-not-allowed">
+                        Librarian
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleMakeLibrarian(user)}
+                        className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                        <Users size={14} /> Make Librarian
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
