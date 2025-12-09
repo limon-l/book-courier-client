@@ -3,9 +3,97 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import SectionTitle from "../../components/Shared/SectionTitle";
 import { Link } from "react-router-dom";
-import { Star, Search, RefreshCcw } from "lucide-react";
+import { Star, Search, RefreshCcw, ChevronDown, Filter } from "lucide-react";
 import Loading from "../../components/Shared/Loading";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
+const FilterDropdown = ({ options, value, onChange, defaultLabel }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const selectedOption = options.find((opt) => opt.value === value);
+
+  const listVariants = {
+    hidden: {
+      opacity: 0,
+      y: -10,
+      height: 0,
+      transition: {
+        when: "afterChildren",
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+      },
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      height: "auto",
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -10, x: -10 },
+    visible: { opacity: 1, y: 0, x: 0 },
+  };
+
+  return (
+    <div className="relative w-full md:w-56 z-50">
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex justify-between items-center text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all hover:border-emerald-500">
+        <span className="truncate">
+          {selectedOption?.label || defaultLabel}
+        </span>
+        <ChevronDown
+          size={18}
+          className={`transition-transform duration-300 ${
+            isOpen ? "rotate-180" : "rotate-0"
+          }`}
+        />
+      </motion.button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.ul
+            variants={listVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden max-h-60 overflow-y-auto z-50 scrollbar-thin scrollbar-thumb-emerald-200 dark:scrollbar-thumb-slate-600">
+            {options.map((opt) => (
+              <motion.li
+                key={opt.value}
+                variants={itemVariants}
+                onClick={() => {
+                  onChange(opt.value);
+                  setIsOpen(false);
+                }}
+                className={`px-4 py-3 cursor-pointer text-sm transition-colors hover:bg-emerald-50 dark:hover:bg-slate-700 ${
+                  value === opt.value
+                    ? "bg-emerald-50 dark:bg-slate-700 text-emerald-600 font-medium"
+                    : "text-slate-600 dark:text-slate-300"
+                }`}>
+                {opt.label}
+              </motion.li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-transparent"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </div>
+  );
+};
 
 const AllBooks = () => {
   const axiosPublic = useAxiosPublic();
@@ -44,6 +132,29 @@ const AllBooks = () => {
     show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
+  const categories = [
+    { label: "All Categories", value: "" },
+    { label: "Fiction", value: "Fiction" },
+    { label: "Non-Fiction", value: "Non-Fiction" },
+    { label: "Novel", value: "Novel" },
+    { label: "Story", value: "Story" },
+    { label: "Thriller", value: "Thriller" },
+    { label: "History", value: "History" },
+    { label: "Sci-Fi", value: "Sci-Fi" },
+    { label: "Fantasy", value: "Fantasy" },
+    { label: "Mystery", value: "Mystery" },
+    { label: "Biography", value: "Biography" },
+    { label: "Self-Help", value: "Self-Help" },
+    { label: "Poetry", value: "Poetry" },
+    { label: "Others", value: "Others" },
+  ];
+
+  const sortOptions = [
+    { label: "Default Sort", value: "" },
+    { label: "Price: Low to High", value: "price-asc" },
+    { label: "Price: High to Low", value: "price-desc" },
+  ];
+
   return (
     <div className="pt-24 pb-12 px-4 max-w-7xl mx-auto min-h-screen">
       <SectionTitle
@@ -55,7 +166,7 @@ const AllBooks = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-12 flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+        className="mb-12 flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 relative z-30">
         <div className="relative w-full md:w-96">
           <Search
             className="absolute left-4 top-3.5 text-slate-400"
@@ -70,31 +181,20 @@ const AllBooks = () => {
           />
         </div>
 
-        <div className="flex gap-4 w-full md:w-auto">
-          <motion.select
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+          <FilterDropdown
+            options={categories}
             value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer dark:text-white transition-all hover:border-emerald-500">
-            <option value="">All Categories</option>
-            <option value="Fiction">Fiction</option>
-            <option value="Thriller">Thriller</option>
-            <option value="Sci-Fi">Sci-Fi</option>
-            <option value="History">History</option>
-            <option value="Biography">Biography</option>
-          </motion.select>
+            onChange={setFilterCategory}
+            defaultLabel="Filter Category"
+          />
 
-          <motion.select
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <FilterDropdown
+            options={sortOptions}
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer dark:text-white transition-all hover:border-emerald-500">
-            <option value="">Default Sort</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-          </motion.select>
+            onChange={setSortBy}
+            defaultLabel="Sort By"
+          />
         </div>
       </motion.div>
 
@@ -121,10 +221,11 @@ const AllBooks = () => {
         </div>
       ) : (
         <motion.div
+          key={filterCategory + sortBy + searchTerm}
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 z-0">
           {books.map((book) => (
             <motion.div
               key={book._id}
