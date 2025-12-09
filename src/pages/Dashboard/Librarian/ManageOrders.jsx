@@ -17,20 +17,32 @@ const ManageOrders = () => {
   });
 
   const handleStatusChange = (id, newStatus) => {
-    axiosSecure
-      .patch(`/orders/status/${id}`, { status: newStatus })
-      .then((res) => {
-        if (res.data.modifiedCount > 0) {
-          refetch();
-          Swal.fire({
-            title: "Updated!",
-            text: `Order marked as ${newStatus}`,
-            icon: "success",
-            timer: 1500,
-            showConfirmButton: false,
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You are about to change the status to ${newStatus}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#10B981",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure
+          .patch(`/orders/status/${id}`, { status: newStatus })
+          .then((res) => {
+            if (res.data.modifiedCount > 0) {
+              refetch();
+              Swal.fire({
+                title: "Updated!",
+                text: `Order marked as ${newStatus}`,
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false,
+              });
+            }
           });
-        }
-      });
+      }
+    });
   };
 
   return (
@@ -70,11 +82,11 @@ const ManageOrders = () => {
                 </td>
                 <td className="py-4 pr-6 text-right">
                   <select
-                    defaultValue={order.status}
+                    value={order.status}
                     onChange={(e) =>
                       handleStatusChange(order._id, e.target.value)
                     }
-                    className="select select-sm text-xs border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-800">
+                    className="select select-sm text-xs border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-800 cursor-pointer">
                     <option value="pending">Pending</option>
                     <option value="shipped">Shipped</option>
                     <option value="delivered">Delivered</option>
