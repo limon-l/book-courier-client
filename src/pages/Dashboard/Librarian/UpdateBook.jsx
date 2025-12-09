@@ -1,10 +1,11 @@
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import SectionTitle from "../../../components/Shared/SectionTitle";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../components/Shared/Loading";
+import { motion } from "framer-motion";
 
 const UpdateBook = () => {
   const { id } = useParams();
@@ -28,6 +29,7 @@ const UpdateBook = () => {
       author: data.author,
       image: data.image,
       category: data.category,
+      price: parseFloat(data.price),
       rating: parseFloat(data.rating),
       status: data.status,
     };
@@ -48,7 +50,11 @@ const UpdateBook = () => {
   return (
     <div>
       <SectionTitle heading="Update Book" subHeading="Edit details" />
-      <div className="max-w-3xl mx-auto bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-3xl mx-auto bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="form-control w-full">
             <label className="label mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
@@ -58,7 +64,7 @@ const UpdateBook = () => {
               defaultValue={book.title}
               {...register("title")}
               type="text"
-              className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+              className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
             />
           </div>
 
@@ -71,7 +77,7 @@ const UpdateBook = () => {
                 defaultValue={book.author}
                 {...register("author")}
                 type="text"
-                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
               />
             </div>
             <div className="form-control w-full">
@@ -81,7 +87,7 @@ const UpdateBook = () => {
               <select
                 defaultValue={book.category}
                 {...register("category")}
-                className="select w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500">
+                className="select w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors">
                 <option value="Fiction">Fiction</option>
                 <option value="Thriller">Thriller</option>
                 <option value="History">History</option>
@@ -94,13 +100,14 @@ const UpdateBook = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control w-full">
               <label className="label mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
-                Image URL
+                Price ($)
               </label>
               <input
-                defaultValue={book.image}
-                {...register("image")}
-                type="url"
-                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                defaultValue={book.price}
+                {...register("price")}
+                type="number"
+                step="0.01"
+                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
               />
             </div>
             <div className="form-control w-full">
@@ -113,9 +120,21 @@ const UpdateBook = () => {
                 type="number"
                 step="0.1"
                 max="5"
-                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500"
+                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
               />
             </div>
+          </div>
+
+          <div className="form-control w-full">
+            <label className="label mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
+              Image URL
+            </label>
+            <input
+              defaultValue={book.image}
+              {...register("image")}
+              type="url"
+              className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
+            />
           </div>
 
           <div className="form-control w-full">
@@ -125,17 +144,20 @@ const UpdateBook = () => {
             <select
               defaultValue={book.status}
               {...register("status")}
-              className="select w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500">
+              className="select w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors">
               <option value="published">Published</option>
               <option value="unpublished">Unpublished</option>
             </select>
           </div>
 
-          <button className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/20">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/20">
             Update Book Details
-          </button>
+          </motion.button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };
