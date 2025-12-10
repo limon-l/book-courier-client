@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
 });
 
 const useAxiosSecure = () => {
@@ -23,13 +23,13 @@ const useAxiosSecure = () => {
     }
   );
 
-  // Response Interceptor: Intercepts 401 and 403 status
   axiosSecure.interceptors.response.use(
     function (response) {
       return response;
     },
     async (error) => {
       const status = error.response ? error.response.status : null;
+
       if (status === 401 || status === 403) {
         await logOut();
         navigate("/login");
