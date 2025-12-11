@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 import { useEffect } from "react";
 
+const backendUrl = "https://lighthouse-server-three.vercel.app";
+
 const axiosSecure = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    "https://lighthouse-server-three.vercel.app",
+  baseURL: backendUrl,
 });
 
 const useAxiosSecure = () => {
@@ -29,7 +29,6 @@ const useAxiosSecure = () => {
       (response) => response,
       async (error) => {
         const status = error.response ? error.response.status : null;
-
         if (status === 401 || status === 403) {
           await logOut();
           navigate("/login");

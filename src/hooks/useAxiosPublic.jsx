@@ -1,9 +1,8 @@
 import axios from "axios";
+const backendUrl = "https://lighthouse-server-three.vercel.app";
 
 const axiosPublic = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    "https://lighthouse-server-three.vercel.app",
+  baseURL: backendUrl,
 });
 
 const useAxiosPublic = () => {
