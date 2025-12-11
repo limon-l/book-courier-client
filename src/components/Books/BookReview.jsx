@@ -54,19 +54,6 @@ const BookReview = ({ bookId, bookTitle }) => {
     }
   };
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50 } },
-  };
-
   return (
     <div className="mt-16 border-t border-slate-200 dark:border-slate-800 pt-16">
       <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3">
@@ -154,17 +141,15 @@ const BookReview = ({ bookId, bookTitle }) => {
               </p>
             </motion.div>
           ) : (
-            <motion.div
-              variants={container}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              className="space-y-6">
-              <AnimatePresence>
+            <div className="space-y-6">
+              <AnimatePresence mode="popLayout">
                 {reviews.map((review, idx) => (
                   <motion.div
-                    key={idx}
-                    variants={item}
+                    key={review._id || idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.3, delay: idx * 0.05 }}
                     className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-4">
@@ -209,7 +194,7 @@ const BookReview = ({ bookId, bookTitle }) => {
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </motion.div>
+            </div>
           )}
         </div>
       </div>
