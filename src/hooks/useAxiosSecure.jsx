@@ -4,7 +4,9 @@ import useAuth from "./useAuth";
 import { useEffect } from "react";
 
 const axiosSecure = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    "https://lighthouse-server-three.vercel.app",
 });
 
 const useAxiosSecure = () => {
