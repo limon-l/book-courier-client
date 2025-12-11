@@ -12,7 +12,7 @@ const LibrarianRoute = ({ children }) => {
     return <Loading />;
   }
 
-  if (user && role === "librarian") {
+  if (user && (role === "librarian" || role === "admin")) {
     return children;
   }
 

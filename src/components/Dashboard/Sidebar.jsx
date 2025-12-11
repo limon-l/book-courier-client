@@ -13,10 +13,8 @@ import {
   Heart,
   FileText,
   Menu,
-  X,
   LogOut,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 const MenuLink = ({ to, icon: Icon, label, isSidebarOpen }) => (
   <NavLink
@@ -56,7 +54,7 @@ const Sidebar = () => {
           className={`font-bold text-xl text-emerald-600 truncate ${
             !isSidebarOpen && "hidden"
           }`}>
-          LightHouse
+          BookCourier
         </Link>
         <button
           onClick={() => setSidebarOpen(!isSidebarOpen)}
@@ -95,7 +93,7 @@ const Sidebar = () => {
           </>
         )}
 
-        {role === "librarian" && (
+        {(role === "librarian" || role === "admin") && (
           <>
             <div
               className={`text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 mt-2 px-4 ${
