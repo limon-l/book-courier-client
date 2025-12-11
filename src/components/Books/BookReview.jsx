@@ -201,9 +201,11 @@ const BookReview = ({ bookId, bookTitle }) => {
                         </span>
                       </div>
                     </div>
-                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed pl-[4rem] border-l-2 border-slate-100 dark:border-slate-800 ml-6">
-                      {review.comment}
-                    </p>
+                    <div className="mt-4 pl-0 md:pl-[4rem]">
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm md:text-base">
+                        {review.comment}
+                      </p>
+                    </div>
                   </motion.div>
                 ))}
               </AnimatePresence>
