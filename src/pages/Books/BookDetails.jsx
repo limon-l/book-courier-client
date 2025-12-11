@@ -5,6 +5,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Loading from "../../components/Shared/Loading";
 import OrderModal from "../../components/Books/OrderModal";
+import BookReview from "../../components/Books/BookReview";
 import { Star, Heart, ArrowLeft, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -50,7 +51,7 @@ const BookDetails = () => {
       if (isInWishlist) {
         const res = await axiosSecure.delete(`/wishlist/${wishlistItem._id}`);
         if (res.data.deletedCount > 0) {
-          toast.success("Removed from Wishlist", { icon: "❌" });
+          toast.success("Removed from Wishlist", { icon: "❎" });
           refetchWishlist();
         }
       } else {
@@ -105,7 +106,7 @@ const BookDetails = () => {
         <ArrowLeft size={20} /> Back to Collection
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
         <div className="md:col-span-5 lg:col-span-4">
           <div className="rounded-2xl overflow-hidden shadow-2xl mb-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2">
             <img
@@ -195,6 +196,8 @@ const BookDetails = () => {
           </div>
         </div>
       </div>
+
+      <BookReview bookId={id} bookTitle={book.title} />
 
       {isModalOpen && (
         <OrderModal
