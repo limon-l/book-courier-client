@@ -62,7 +62,7 @@ const Register = () => {
             Create Account
           </h2>
           <p className="mt-2 text-slate-600 dark:text-slate-400">
-            Join BookCourier today
+            Join LightHouse today
           </p>
         </div>
         <form className="mt-8 space-y-5" onSubmit={handleRegister}>

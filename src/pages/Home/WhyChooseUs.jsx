@@ -18,7 +18,7 @@ const WhyChooseUs = () => {
               <span className="text-emerald-600">borrow books.</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 mb-8 text-lg leading-relaxed">
-              BookCourier bridges the gap between traditional libraries and
+              LightHouse bridges the gap between traditional libraries and
               modern convenience. We handle the logistics so you can focus on
               reading.
             </p>

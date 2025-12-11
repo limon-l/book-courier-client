@@ -50,7 +50,7 @@ const CoverageMap = () => {
             </div>
           ))}
           <div className="absolute bottom-6 right-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-4 py-2 rounded-lg shadow text-xs font-mono text-slate-500">
-            Map Data © BookCourier 2025
+            Map Data © LightHouse 2025
           </div>
         </div>
       </div>

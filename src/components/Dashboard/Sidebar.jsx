@@ -56,7 +56,7 @@ const Sidebar = () => {
           className={`font-bold text-xl text-emerald-600 truncate ${
             !isSidebarOpen && "hidden"
           }`}>
-          BookCourier
+          LightHouse
         </Link>
         <button
           onClick={() => setSidebarOpen(!isSidebarOpen)}

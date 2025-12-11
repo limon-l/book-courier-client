@@ -12,7 +12,7 @@ const Footer = () => {
                 <BookOpen className="text-white h-5 w-5" />
               </div>
               <span className="text-xl font-bold text-slate-800 dark:text-white">
-                BookCourier
+                LightHouse
               </span>
             </div>
             <p className="text-slate-500 text-sm leading-relaxed mb-6">
@@ -58,7 +58,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-slate-500">
               <li>123 Library Street</li>
               <li>Dhaka, Bangladesh</li>
-              <li>support@bookcourier.com</li>
+              <li>support@LightHouse.com</li>
             </ul>
           </div>
           <div>
@@ -81,7 +81,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 text-center text-slate-400 text-sm">
-          &copy; 2025 BookCourier. All rights reserved.
+          &copy; 2025 LightHouse. All rights reserved.
         </div>
       </div>
     </footer>
