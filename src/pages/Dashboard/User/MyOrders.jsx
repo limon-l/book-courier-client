@@ -4,6 +4,9 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import SectionTitle from "../../../components/Shared/SectionTitle";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { motion, AnimatePresence } from "framer-motion";
+import { Package, XCircle, CreditCard, CheckCircle } from "lucide-react";
+import Loading from "../../../components/Shared/Loading";
 
 const MyOrders = () => {
   const { user } = useAuth();
@@ -11,10 +14,11 @@ const MyOrders = () => {
 
   const {
     data: orders = [],
-    refetch,
     isLoading,
+    refetch,
   } = useQuery({
     queryKey: ["orders", user?.email],
+    enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/orders?email=${user.email}`);
       return res.data;
@@ -27,18 +31,18 @@ const MyOrders = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#10B981",
       confirmButtonText: "Yes, cancel it!",
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure.delete(`/orders/${id}`).then((res) => {
           if (res.data.deletedCount > 0) {
-            Swal.fire({
-              title: "Cancelled!",
-              text: "Your order has been cancelled.",
-              icon: "success",
-            });
+            Swal.fire(
+              "Cancelled!",
+              "Your order has been cancelled.",
+              "success"
+            );
             refetch();
           }
         });
@@ -46,120 +50,132 @@ const MyOrders = () => {
     });
   };
 
+  if (isLoading) return <Loading />;
+
   return (
-    <div className="animate-fadeIn duration-500">
+    <div>
       <SectionTitle heading="My Orders" subHeading="Track your books" />
 
-      {isLoading && (
-        <div className="flex justify-center py-20">
-          <svg
-            className="animate-spin h-10 w-10 text-emerald-600"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+      {orders.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-64 text-center">
+          <Package
+            size={64}
+            className="text-slate-300 dark:text-slate-700 mb-4"
+          />
+          <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300">
+            No orders yet
+          </h3>
+          <p className="text-slate-500">
+            Go explore the library and borrow some books!
+          </p>
+          <Link
+            to="/books"
+            className="mt-4 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
+            Browse Books
+          </Link>
         </div>
-      )}
-
-      {!isLoading && (
-        <div className="overflow-x-auto bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 animate-slideUpSlow">
+      ) : (
+        <div className="overflow-hidden bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
           <table className="table w-full">
-            <thead className="bg-slate-50 dark:bg-slate-800 text-slate-500">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 uppercase text-xs font-bold tracking-wider">
               <tr>
-                <th className="py-4 pl-6 text-left">Book Title</th>
-                <th className="py-4 text-left">Order Date</th>
-                <th className="py-4 text-left">Status</th>
-                <th className="py-4 text-left">Price</th>
-                <th className="py-4 pr-6 text-right">Action</th>
+                <th className="py-5 pl-6 text-left">Book Details</th>
+                <th className="py-5 text-left">Order Date</th>
+                <th className="py-5 text-left">Status</th>
+                <th className="py-5 text-left">Amount</th>
+                <th className="py-5 pr-6 text-right">Actions</th>
               </tr>
             </thead>
-
-            <tbody className="text-slate-700 dark:text-slate-300">
-              {orders.map((order, i) => (
-                <tr
-                  key={order._id}
-                  className="border-b border-slate-100 dark:border-slate-800 last:border-none opacity-0 animate-slideUp"
-                  style={{
-                    animationDelay: `${i * 0.07}s`,
-                    animationFillMode: "forwards",
-                  }}>
-                  <td className="py-4 pl-6 font-medium">
-                    {order.bookTitle}
-                    {order.paymentStatus === "paid" && (
-                      <span className="block text-[10px] text-emerald-600 font-mono mt-1">
-                        Paid
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <AnimatePresence>
+                {orders.map((order, index) => (
+                  <motion.tr
+                    key={order._id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="py-4 pl-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-16 rounded-md overflow-hidden bg-slate-200">
+                          <img
+                            src={order.bookImage}
+                            alt={order.bookTitle}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <div className="font-bold text-slate-900 dark:text-white">
+                            {order.bookTitle}
+                          </div>
+                          {order.paymentStatus === "paid" && (
+                            <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full mt-1 font-medium">
+                              <CheckCircle size={10} /> Paid
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 text-slate-600 dark:text-slate-400 text-sm">
+                      {new Date(order.date).toLocaleDateString()}
+                    </td>
+                    <td className="py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold capitalize inline-flex items-center gap-1.5 ${
+                          order.status === "delivered"
+                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                            : order.status === "cancelled"
+                            ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                            : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                        }`}>
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            order.status === "delivered"
+                              ? "bg-emerald-500"
+                              : order.status === "cancelled"
+                              ? "bg-red-500"
+                              : "bg-amber-500"
+                          }`}></span>
+                        {order.status}
                       </span>
-                    )}
-                  </td>
+                    </td>
+                    <td className="py-4 font-bold text-slate-900 dark:text-white">
+                      ${order.price}
+                    </td>
+                    <td className="py-4 pr-6 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {order.status === "pending" && (
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleCancelOrder(order._id)}
+                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            title="Cancel Order">
+                            <XCircle size={20} />
+                          </motion.button>
+                        )}
 
-                  <td className="py-4">
-                    {new Date(order.date).toLocaleDateString()}
-                  </td>
-
-                  <td className="py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${
-                        order.status === "delivered"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : order.status === "cancelled"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}>
-                      {order.status}
-                    </span>
-                  </td>
-
-                  <td className="py-4 font-bold text-slate-800 dark:text-slate-200">
-                    ${order.price}
-                  </td>
-
-                  <td className="py-4 pr-6 text-right space-x-2">
-                    {order.status === "pending" && (
-                      <button
-                        onClick={() => handleCancelOrder(order._id)}
-                        className="px-3 py-1.5 text-red-500 hover:bg-red-50 rounded-lg text-sm font-medium transition">
-                        Cancel
-                      </button>
-                    )}
-
-                    {order.status === "pending" &&
-                      order.paymentStatus !== "paid" && (
-                        <Link
-                          to={`/dashboard/payment/${order._id}`}
-                          className="px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-sm font-bold hover:bg-emerald-700 transition">
-                          Pay Now
-                        </Link>
-                      )}
-
-                    {order.paymentStatus === "paid" && (
-                      <span className="text-emerald-600 font-bold text-sm px-2">
-                        Paid ✓
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-
-              {orders.length === 0 && (
-                <tr>
-                  <td
-                    colSpan="5"
-                    className="text-center py-16 text-slate-500 animate-fadeInSlow">
-                    No orders found.
-                  </td>
-                </tr>
-              )}
+                        {order.status === "pending" &&
+                        order.paymentStatus !== "paid" ? (
+                          <Link to={`/dashboard/payment/${order._id}`}>
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-bold hover:bg-emerald-700 shadow-md shadow-emerald-500/20 transition-all">
+                              <CreditCard size={16} /> Pay Now
+                            </motion.button>
+                          </Link>
+                        ) : order.paymentStatus === "paid" ? (
+                          <span className="text-emerald-500 font-bold text-sm">
+                            Completed
+                          </span>
+                        ) : null}
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
             </tbody>
           </table>
         </div>
