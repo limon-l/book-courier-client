@@ -1,13 +1,12 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "./CheckoutForm";
-import SectionTitle from "../../../components/Shared/SectionTitle";
-import { useParams } from "react-router-dom";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loading from "../../../components/Shared/Loading";
+import CheckoutForm from "./CheckoutForm";
 import { ArrowLeft, ShieldCheck, Truck } from "lucide-react";
-import { Link } from "react-router-dom";
 
 const stripeKey = import.meta.env.VITE_Payment_Gateway_PK;
 const stripePromise = stripeKey ? loadStripe(stripeKey) : null;
@@ -28,23 +27,26 @@ const Payment = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading message="Fetching order details..." />;
 
-  if (!stripePromise) {
+  if (!stripePromise)
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-500 font-bold">
-        Error: Stripe Configuration Missing
+      <div className="min-h-screen flex flex-col items-center justify-center text-red-500 font-bold gap-4">
+        <p>Error: Stripe Configuration Missing</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-emerald-600 text-white rounded-lg">
+          Retry
+        </button>
       </div>
     );
-  }
 
-  if (isError || !order) {
+  if (isError || !order)
     return (
       <div className="min-h-screen flex items-center justify-center text-red-500 font-bold">
         Error: Order information not found.
       </div>
     );
-  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-12 px-4">
@@ -55,18 +57,22 @@ const Payment = () => {
           <ArrowLeft size={20} /> Cancel Payment
         </Link>
 
-        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-200 dark:border-slate-700">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-slate-200 dark:border-slate-700">
+          {/* Order Summary */}
           <div className="md:w-5/12 bg-slate-100 dark:bg-slate-900 p-8 relative overflow-hidden flex flex-col justify-between">
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-
             <div className="relative z-10">
               <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">
                 Order Summary
               </h3>
               <div className="aspect-[2/3] w-32 rounded-lg shadow-lg overflow-hidden mb-6 border-4 border-white dark:border-slate-700">
                 <img
-                  src={order.bookImage}
-                  alt={order.bookTitle}
+                  src={order.bookImage || "/placeholder-book.png"}
+                  alt={order.bookTitle || "Book cover"}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -90,7 +96,8 @@ const Payment = () => {
             </div>
           </div>
 
-          <div className="md:w-7/12 p-8 md:p-12">
+          {/* Payment Form */}
+          <div className="md:w-7/12 p-8 md:p-12 md:border-l md:border-slate-200 dark:md:border-slate-700">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Payment Details
@@ -104,7 +111,7 @@ const Payment = () => {
               <CheckoutForm order={order} />
             </Elements>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

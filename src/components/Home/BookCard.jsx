@@ -10,12 +10,15 @@ const BookCard = ({ book }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3 }}
+      className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full">
       <div className="h-[280px] overflow-hidden relative bg-slate-100 dark:bg-slate-800">
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
         />
 
         {quantity === 0 && (
@@ -28,13 +31,15 @@ const BookCard = ({ book }) => {
 
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
           <Link to={`/books/${_id}`}>
-            <button className="bg-white text-emerald-600 px-6 py-2.5 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-emerald-50 shadow-lg">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-emerald-600 px-6 py-2.5 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-emerald-50 shadow-lg">
               View Details
-            </button>
+            </motion.button>
           </Link>
         </div>
 
-        {/* Category Badge */}
         <div className="absolute top-3 left-3 z-20">
           <span className="bg-white/95 dark:bg-slate-900/90 backdrop-blur text-emerald-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm uppercase tracking-wide">
             {category}

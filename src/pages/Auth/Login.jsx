@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const { signIn, googleSignIn } = useAuth();
+  const axiosPublic = useAxiosPublic();
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
@@ -30,10 +32,16 @@ const Login = () => {
   const handleGoogleLogin = () => {
     googleSignIn()
       .then((result) => {
-        // In a real app, save user to DB here via axios
-        console.log(result.user);
-        toast.success("Google Login Successful");
-        navigate(from, { replace: true });
+        const userInfo = {
+          email: result.user?.email,
+          name: result.user?.displayName,
+          role: "user",
+        };
+        axiosPublic.post("/users", userInfo).then((res) => {
+          console.log("User sync response:", res.data);
+          toast.success("Google Login Successful");
+          navigate(from, { replace: true });
+        });
       })
       .catch((error) => toast.error(error.message));
   };
@@ -123,7 +131,7 @@ const Login = () => {
                   fill="#EA4335"
                 />
               </svg>
-              Google
+              Sign in with Google
             </button>
           </div>
         </div>

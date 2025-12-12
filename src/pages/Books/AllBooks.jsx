@@ -3,13 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import SectionTitle from "../../components/Shared/SectionTitle";
 import { Link } from "react-router-dom";
-import { Star, Search, RefreshCcw, ChevronDown, Filter } from "lucide-react";
+import {
+  Star,
+  Search,
+  RefreshCcw,
+  ChevronDown,
+  Filter,
+  ShoppingBag,
+} from "lucide-react";
 import Loading from "../../components/Shared/Loading";
 import { motion, AnimatePresence } from "framer-motion";
 
 const FilterDropdown = ({ options, value, onChange, defaultLabel }) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const selectedOption = options.find((opt) => opt.value === value);
 
   const listVariants = {
@@ -27,10 +33,7 @@ const FilterDropdown = ({ options, value, onChange, defaultLabel }) => {
       opacity: 1,
       y: 0,
       height: "auto",
-      transition: {
-        when: "beforeChildren",
-        staggerChildren: 0.05,
-      },
+      transition: { when: "beforeChildren", staggerChildren: 0.05 },
     },
   };
 
@@ -84,7 +87,6 @@ const FilterDropdown = ({ options, value, onChange, defaultLabel }) => {
           </motion.ul>
         )}
       </AnimatePresence>
-
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-transparent"
@@ -115,21 +117,6 @@ const AllBooks = () => {
     setSearchTerm("");
     setSortBy("");
     setFilterCategory("");
-  };
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
   const categories = [
@@ -188,7 +175,6 @@ const AllBooks = () => {
             onChange={setFilterCategory}
             defaultLabel="Filter Category"
           />
-
           <FilterDropdown
             options={sortOptions}
             value={sortBy}
@@ -221,64 +207,72 @@ const AllBooks = () => {
         </div>
       ) : (
         <motion.div
-          key={filterCategory + sortBy + searchTerm}
-          variants={container}
-          initial="hidden"
-          animate="show"
+          layout
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 z-0">
-          {books.map((book) => (
-            <motion.div
-              key={book._id}
-              variants={item}
-              className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
-              <div className="h-[300px] overflow-hidden relative bg-slate-100 dark:bg-slate-800">
-                <img
-                  src={book.image}
-                  alt={book.title}
-                  className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-                />
-                {book.quantity === 0 && (
-                  <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    Out of Stock
+          <AnimatePresence>
+            {books.map((book) => (
+              <motion.div
+                layout
+                key={book._id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div className="h-[300px] overflow-hidden relative bg-slate-100 dark:bg-slate-800">
+                  <img
+                    src={book.image}
+                    alt={book.title}
+                    className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                  />
+                  {book.quantity === 0 && (
+                    <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                      Out of Stock
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <Link to={`/books/${book._id}`}>
+                      <button className="bg-white text-slate-900 px-6 py-2 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition duration-300 hover:bg-emerald-500 hover:text-white shadow-lg cursor-pointer">
+                        View Details
+                      </button>
+                    </Link>
                   </div>
-                )}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <Link to={`/books/${book._id}`}>
-                    <button className="bg-white text-slate-900 px-6 py-2 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition duration-300 hover:bg-emerald-500 hover:text-white shadow-lg cursor-pointer">
-                      View Details
-                    </button>
-                  </Link>
                 </div>
-              </div>
-              <div className="p-5">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md uppercase tracking-wider">
-                    {book.category}
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <Star size={14} className="text-amber-400 fill-amber-400" />
-                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                      {book.rating || 0}
+                <div className="p-5">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md uppercase tracking-wider">
+                      {book.category}
                     </span>
+                    <div className="flex items-center gap-1">
+                      <Star
+                        size={14}
+                        className="text-amber-400 fill-amber-400"
+                      />
+                      <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                        {book.rating || 0}
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">
+                    {book.title}
+                  </h3>
+                  <p className="text-sm text-slate-500 mb-4">
+                    by {book.author}
+                  </p>
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <span className="text-xl font-bold text-slate-900 dark:text-white">
+                      ${book.price}
+                    </span>
+                    <Link
+                      to={`/books/${book._id}`}
+                      className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-full transition-colors cursor-pointer">
+                      <ShoppingBag size={20} />
+                    </Link>
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">
-                  {book.title}
-                </h3>
-                <p className="text-sm text-slate-500 mb-4">by {book.author}</p>
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                  <span className="text-xl font-bold text-slate-900 dark:text-white">
-                    ${book.price}
-                  </span>
-                  <Link
-                    to={`/books/${book._id}`}
-                    className="text-sm font-bold text-emerald-600 hover:underline cursor-pointer">
-                    Details &rarr;
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </motion.div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Send } from "lucide-react";
+import { BookOpen, Send, Facebook, Github, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -21,11 +21,34 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 shadow-sm flex items-center justify-center text-slate-400 hover:text-emerald-500 cursor-pointer transition">
-                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 shadow-sm flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:-translate-y-1 cursor-pointer transition-all duration-300 border border-slate-100 dark:border-slate-800">
+                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
+              </a>
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 shadow-sm flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:-translate-y-1 cursor-pointer transition-all duration-300 border border-slate-100 dark:border-slate-800">
+                <Facebook size={18} />
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 shadow-sm flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:-translate-y-1 cursor-pointer transition-all duration-300 border border-slate-100 dark:border-slate-800">
+                <Linkedin size={18} />
+              </a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white dark:bg-slate-900 shadow-sm flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:-translate-y-1 cursor-pointer transition-all duration-300 border border-slate-100 dark:border-slate-800">
+                <Github size={18} />
               </a>
             </div>
           </div>
@@ -72,9 +95,9 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="w-full px-4 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none transition-all dark:text-white"
               />
-              <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition">
+              <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition shadow-lg shadow-emerald-500/20">
                 <Send size={18} />
               </button>
             </form>

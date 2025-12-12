@@ -70,26 +70,27 @@ const AllUsers = () => {
                   {user.role || "user"}
                 </td>
                 <td className="py-4 pr-6 text-right">
-                  <div className="flex items-center justify-end gap-2">
+                  <div className="flex items-center justify-end gap-3">
                     {user.role === "admin" ? (
-                      <span className="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 px-3 py-1.5 rounded-lg cursor-not-allowed">
-                        Admin
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed border border-slate-200 dark:border-slate-700">
+                        <Shield size={14} className="mr-1" /> Admin
                       </span>
                     ) : (
                       <button
                         onClick={() => handleMakeAdmin(user)}
-                        className="bg-purple-50 text-purple-600 hover:bg-purple-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                        className="bg-purple-50 text-purple-600 hover:bg-purple-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-purple-100 dark:border-transparent">
                         <Shield size={14} /> Make Admin
                       </button>
                     )}
+
                     {user.role === "librarian" ? (
-                      <span className="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 px-3 py-1.5 rounded-lg cursor-not-allowed">
-                        Librarian
+                      <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed border border-slate-200 dark:border-slate-700">
+                        <Users size={14} className="mr-1" /> Librarian
                       </span>
                     ) : (
                       <button
                         onClick={() => handleMakeLibrarian(user)}
-                        className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                        className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-blue-100 dark:border-transparent">
                         <Users size={14} /> Make Librarian
                       </button>
                     )}

@@ -9,7 +9,7 @@ const ManageBooks = () => {
   const { data: books = [], refetch } = useQuery({
     queryKey: ["all-books-admin"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/books");
+      const res = await axiosSecure.get("/books/admin");
       return res.data;
     },
   });

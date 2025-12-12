@@ -13,22 +13,8 @@ const FormDropdown = ({ label, options, value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const listVariants = {
-    hidden: {
-      opacity: 0,
-      y: -10,
-      height: 0,
-      transition: {
-        when: "afterChildren",
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      height: "auto",
-      transition: { when: "beforeChildren", staggerChildren: 0.05 },
-    },
+    hidden: { opacity: 0, y: -10, height: 0 },
+    visible: { opacity: 1, y: 0, height: "auto" },
   };
 
   const itemVariants = {
@@ -41,6 +27,7 @@ const FormDropdown = ({ label, options, value, onChange, placeholder }) => {
       <label className="label mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
         {label}
       </label>
+
       <div
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex justify-between items-center text-slate-700 dark:text-white cursor-pointer focus:ring-2 focus:ring-emerald-500 transition-all hover:border-emerald-500">
@@ -85,10 +72,11 @@ const FormDropdown = ({ label, options, value, onChange, placeholder }) => {
           </motion.ul>
         )}
       </AnimatePresence>
+
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-transparent"
           onClick={() => setIsOpen(false)}
+          className="fixed inset-0 z-40 bg-transparent"
         />
       )}
     </div>
@@ -100,6 +88,7 @@ const UpdateBook = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
   const { register, handleSubmit, setValue, watch, reset } = useForm();
+  const [submitting, setSubmitting] = useState(false);
 
   const { data: book, isLoading } = useQuery({
     queryKey: ["book", id],
@@ -149,6 +138,8 @@ const UpdateBook = () => {
   ];
 
   const onSubmit = async (data) => {
+    setSubmitting(true);
+
     const updatedBook = {
       title: data.title,
       author: data.author,
@@ -160,6 +151,9 @@ const UpdateBook = () => {
     };
 
     const res = await axiosSecure.patch(`/books/${id}`, updatedBook);
+
+    setSubmitting(false);
+
     if (res.data.modifiedCount > 0) {
       Swal.fire({
         position: "top-end",
@@ -173,17 +167,13 @@ const UpdateBook = () => {
   };
 
   const inputMotion = {
-    rest: { scale: 1, borderColor: "" },
-    focus: {
-      scale: 1.01,
-      borderColor: "#10B981",
-      transition: { duration: 0.2 },
-    },
+    focus: { scale: 1.01, borderColor: "#10B981" },
   };
 
   return (
     <div>
       <SectionTitle heading="Update Book" subHeading="Edit details" />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -200,7 +190,7 @@ const UpdateBook = () => {
               defaultValue={book.title}
               {...register("title")}
               type="text"
-              className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
+              className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition"
             />
           </div>
 
@@ -215,7 +205,7 @@ const UpdateBook = () => {
                 defaultValue={book.author}
                 {...register("author")}
                 type="text"
-                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
+                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition"
               />
             </div>
 
@@ -240,9 +230,10 @@ const UpdateBook = () => {
                 {...register("price")}
                 type="number"
                 step="0.01"
-                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
+                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition"
               />
             </div>
+
             <div className="form-control w-full">
               <label className="label mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">
                 Rating
@@ -255,7 +246,7 @@ const UpdateBook = () => {
                 type="number"
                 step="0.1"
                 max="5"
-                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
+                className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition"
               />
             </div>
           </div>
@@ -270,7 +261,7 @@ const UpdateBook = () => {
               defaultValue={book.image}
               {...register("image")}
               type="url"
-              className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition-colors"
+              className="input w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white transition"
             />
           </div>
 
@@ -283,10 +274,15 @@ const UpdateBook = () => {
           />
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/20">
-            Update Book Details
+            disabled={submitting}
+            whileHover={{ scale: submitting ? 1 : 1.02 }}
+            whileTap={{ scale: submitting ? 1 : 0.98 }}
+            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/20 flex justify-center items-center">
+            {submitting ? (
+              <span className="loading loading-spinner loading-md"></span>
+            ) : (
+              "Update Book Details"
+            )}
           </motion.button>
         </form>
       </motion.div>

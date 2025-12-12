@@ -5,7 +5,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import SectionTitle from "../../../components/Shared/SectionTitle";
 import Swal from "sweetalert2";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 const FormDropdown = ({ label, options, value, onChange, placeholder }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -98,6 +98,7 @@ const AddBook = () => {
   const { register, handleSubmit, reset, setValue, watch } = useForm();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const [loading, setLoading] = useState(false);
 
   const selectedCategory = watch("category");
 
@@ -122,19 +123,17 @@ const AddBook = () => {
   ];
 
   const onSubmit = async (data) => {
-    const priceValue = parseFloat(data.price);
-    const quantityValue = parseInt(data.quantity);
-    const ratingValue = parseFloat(data.rating);
+    setLoading(true);
 
     const bookItem = {
       title: data.title,
       author: data.author,
       image: data.image,
-      price: isNaN(priceValue) ? 0 : priceValue,
-      quantity: isNaN(quantityValue) ? 0 : quantityValue,
+      price: parseFloat(data.price) || 0,
+      quantity: parseInt(data.quantity) || 0,
       category: data.category,
       description: data.description,
-      rating: isNaN(ratingValue) ? 0 : ratingValue,
+      rating: parseFloat(data.rating) || 0,
       status: "published",
       librarianEmail: user.email,
       librarianName: user.displayName,
@@ -142,6 +141,8 @@ const AddBook = () => {
     };
 
     const bookRes = await axiosSecure.post("/books", bookItem);
+    setLoading(false);
+
     if (bookRes.data.insertedId) {
       reset();
       setValue("category", "");
@@ -156,9 +157,9 @@ const AddBook = () => {
   };
 
   const inputMotion = {
-    rest: { scale: 1, borderColor: "" },
+    rest: { scale: 1 },
     focus: {
-      scale: 1.01,
+      scale: 1.02,
       borderColor: "#10B981",
       transition: { duration: 0.2 },
     },
@@ -171,7 +172,7 @@ const AddBook = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-4xl mx-auto bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+        className="max-w-4xl mx-auto bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-control w-full">
@@ -284,10 +285,16 @@ const AddBook = () => {
           </div>
 
           <motion.button
+            type="submit"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/20">
-            Add Book
+            disabled={loading}
+            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/20 flex justify-center items-center gap-2">
+            {loading ? (
+              <Loader2 size={22} className="animate-spin" />
+            ) : (
+              "Add Book"
+            )}
           </motion.button>
         </form>
       </motion.div>
