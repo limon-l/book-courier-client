@@ -1,13 +1,12 @@
-Here is a professional and comprehensive **`README.md`** file for your **BookCourier** project. You can copy and paste this directly into your GitHub repository's root directory.
+Here is a professional and comprehensive **`README.md`** file for your **BookCourier / LightHouse** project. You can copy and paste this directly into your GitHub repository's root directory.
 
 ````markdown
-# 📚 BookCourier – Library-to-Home Delivery System
+# 📚 BookCourier (LightHouse) – Library-to-Home Delivery System
 
 ![Project Banner](https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1000&auto=format&fit=crop)
 
 **Live Website:** [https://lighthouselibrary.vercel.app](https://lighthouselibrary.vercel.app)  
-**Server API:** [https://book-courier-server.vercel.app](https://book-courier-server.vercel.app)
-
+**Server API:** [https://book-courier-server.vercel.app](https://lighthouse-server-three.vercel.app/)
 ## 📖 Project Overview
 
 **BookCourier** is a sophisticated full-stack library management and delivery system. It bridges the gap between traditional libraries and modern convenience, allowing users to borrow or purchase books online and have them delivered to their doorstep.
@@ -111,7 +110,6 @@ Use these credentials to test the Stripe payment integration in the "Pay Now" se
 git clone [https://github.com/your-username/book-courier-client.git](https://github.com/your-username/book-courier-client.git)
 cd book-courier-client
 ```
-````
 
 ### 2\. Setup Client
 
@@ -180,7 +178,5 @@ To test Admin features locally:
 ## 📄 License
 
 This project is open-source and available under the [MIT License](https://www.google.com/search?q=LICENSE).
-
-```
 
 ```
