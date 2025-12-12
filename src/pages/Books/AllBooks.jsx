@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import SectionTitle from "../../components/Shared/SectionTitle";
 import { Link } from "react-router-dom";
@@ -8,7 +8,6 @@ import {
   Search,
   RefreshCcw,
   ChevronDown,
-  Filter,
   ShoppingBag,
 } from "lucide-react";
 import Loading from "../../components/Shared/Loading";
@@ -43,7 +42,7 @@ const FilterDropdown = ({ options, value, onChange, defaultLabel }) => {
   };
 
   return (
-    <div className="relative w-full md:w-56 z-50">
+    <div className="relative w-full md:w-56 z-30">
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -111,6 +110,7 @@ const AllBooks = () => {
       );
       return res.data;
     },
+    placeholderData: keepPreviousData,
   });
 
   const handleReset = () => {
@@ -142,6 +142,21 @@ const AllBooks = () => {
     { label: "Price: High to Low", value: "price-desc" },
   ];
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
   return (
     <div className="pt-24 pb-12 px-4 max-w-7xl mx-auto min-h-screen">
       <SectionTitle
@@ -153,7 +168,7 @@ const AllBooks = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-12 flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 relative z-30">
+        className="mb-12 flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 relative z-20">
         <div className="relative w-full md:w-96">
           <Search
             className="absolute left-4 top-3.5 text-slate-400"
@@ -207,18 +222,18 @@ const AllBooks = () => {
         </div>
       ) : (
         <motion.div
-          layout
+          variants={container}
+          initial="hidden"
+          animate="show"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 z-0">
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {books.map((book) => (
               <motion.div
                 layout
                 key={book._id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                variants={item}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300">
+                className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
                 <div className="h-[300px] overflow-hidden relative bg-slate-100 dark:bg-slate-800">
                   <img
                     src={book.image}
@@ -237,28 +252,41 @@ const AllBooks = () => {
                       </button>
                     </Link>
                   </div>
-                </div>
-                <div className="p-5">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-md uppercase tracking-wider">
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-white/95 dark:bg-slate-900/95 backdrop-blur text-emerald-600 text-xs font-bold px-3 py-1.5 rounded-full shadow-md uppercase tracking-wide">
                       {book.category}
                     </span>
-                    <div className="flex items-center gap-1">
-                      <Star
-                        size={14}
-                        className="text-amber-400 fill-amber-400"
-                      />
-                      <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                        {book.rating || 0}
+                  </div>
+                </div>
+                <div className="p-5 flex-grow flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">
+                        {book.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-500 mb-4">
+                      by {book.author}
+                    </p>
+                    <div className="flex items-center gap-1 mb-4">
+                      <div className="flex text-amber-400">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            className={
+                              i < Math.floor(book.rating || 0)
+                                ? "fill-current"
+                                : "text-slate-300 dark:text-slate-600"
+                            }
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-slate-400 font-medium ml-1">
+                        ({book.rating || 0})
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">
-                    {book.title}
-                  </h3>
-                  <p className="text-sm text-slate-500 mb-4">
-                    by {book.author}
-                  </p>
                   <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
                     <span className="text-xl font-bold text-slate-900 dark:text-white">
                       ${book.price}
