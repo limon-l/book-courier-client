@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, MapPin, Phone, User, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const OrderModal = ({ book, user, isOpen, closeModal }) => {
@@ -57,13 +57,16 @@ const OrderModal = ({ book, user, isOpen, closeModal }) => {
         <Dialog
           static
           as={motion.div}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           open={isOpen}
           className="relative z-50"
           onClose={closeModal}>
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            aria-hidden="true"
+          />
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -72,8 +75,13 @@ const OrderModal = ({ book, user, isOpen, closeModal }) => {
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                transition={{ duration: 0.3, type: "spring" }}
-                className="w-full max-w-md transform overflow-hidden rounded-3xl bg-white dark:bg-slate-900 p-8 text-left align-middle shadow-2xl transition-all border border-slate-200 dark:border-slate-800">
+                transition={{
+                  duration: 0.3,
+                  type: "spring",
+                  damping: 25,
+                  stiffness: 300,
+                }}
+                className="w-full max-w-md transform overflow-hidden rounded-3xl bg-white dark:bg-slate-900 p-8 text-left align-middle shadow-2xl border border-slate-200 dark:border-slate-800">
                 <div className="flex justify-between items-center mb-8">
                   <Dialog.Title
                     as="h3"
@@ -105,25 +113,37 @@ const OrderModal = ({ book, user, isOpen, closeModal }) => {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                   <div className="grid grid-cols-2 gap-5">
-                    <div>
+                    <div className="relative">
                       <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
                         Name
                       </label>
-                      <input
-                        value={user?.displayName}
-                        readOnly
-                        className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-600 dark:text-slate-400 border-none outline-none font-medium text-sm"
-                      />
+                      <div className="relative">
+                        <User
+                          size={16}
+                          className="absolute left-3 top-3 text-slate-400"
+                        />
+                        <input
+                          value={user?.displayName}
+                          readOnly
+                          className="w-full pl-9 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-600 dark:text-slate-400 border-none outline-none font-medium text-sm cursor-not-allowed"
+                        />
+                      </div>
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
                         Email
                       </label>
-                      <input
-                        value={user?.email}
-                        readOnly
-                        className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-600 dark:text-slate-400 border-none outline-none font-medium text-sm truncate"
-                      />
+                      <div className="relative">
+                        <Mail
+                          size={16}
+                          className="absolute left-3 top-3 text-slate-400"
+                        />
+                        <input
+                          value={user?.email}
+                          readOnly
+                          className="w-full pl-9 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-600 dark:text-slate-400 border-none outline-none font-medium text-sm truncate cursor-not-allowed"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -131,23 +151,35 @@ const OrderModal = ({ book, user, isOpen, closeModal }) => {
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
                       Phone Number
                     </label>
-                    <input
-                      {...register("phone", { required: true })}
-                      type="tel"
-                      placeholder="+880..."
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all dark:text-white"
-                    />
+                    <div className="relative">
+                      <Phone
+                        size={16}
+                        className="absolute left-3 top-3.5 text-slate-400"
+                      />
+                      <input
+                        {...register("phone", { required: true })}
+                        type="tel"
+                        placeholder="+880..."
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all dark:text-white"
+                      />
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">
                       Delivery Address
                     </label>
-                    <textarea
-                      {...register("address", { required: true })}
-                      rows="3"
-                      placeholder="Street, City, Zip Code..."
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none resize-none transition-all dark:text-white"></textarea>
+                    <div className="relative">
+                      <MapPin
+                        size={16}
+                        className="absolute left-3 top-3.5 text-slate-400"
+                      />
+                      <textarea
+                        {...register("address", { required: true })}
+                        rows="3"
+                        placeholder="Street, City, Zip Code..."
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none resize-none transition-all dark:text-white"></textarea>
+                    </div>
                   </div>
 
                   <div className="pt-4">
