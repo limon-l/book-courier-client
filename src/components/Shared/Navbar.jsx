@@ -101,7 +101,7 @@ const Navbar = () => {
               <BookOpen className="text-white h-6 w-6" />
             </motion.div>
             <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-tight group-hover:opacity-80 transition-opacity">
-              LightHouse
+              BookCourier
             </span>
           </Link>
 

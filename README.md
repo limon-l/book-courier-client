@@ -1,7 +1,7 @@
-Here is a professional and comprehensive **`README.md`** file for your **BookCourier / LightHouse** project. You can copy and paste this directly into your GitHub repository's root directory.
+Here is a professional and comprehensive **`README.md`** file for your **BookCourier** project. You can copy and paste this directly into your GitHub repository's root directory.
 
 ````markdown
-# 📚 BookCourier (LightHouse) – Library-to-Home Delivery System
+# 📚 BookCourier – Library-to-Home Delivery System
 
 ![Project Banner](https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1000&auto=format&fit=crop)
 
@@ -10,7 +10,7 @@ Here is a professional and comprehensive **`README.md`** file for your **BookCou
 
 ## 📖 Project Overview
 
-**BookCourier** (branded as LightHouse) is a sophisticated full-stack library management and delivery system. It bridges the gap between traditional libraries and modern convenience, allowing users to borrow or purchase books online and have them delivered to their doorstep.
+**BookCourier** is a sophisticated full-stack library management and delivery system. It bridges the gap between traditional libraries and modern convenience, allowing users to borrow or purchase books online and have them delivered to their doorstep.
 
 The platform features a multi-role system (**User, Librarian, Admin**), real-time order tracking, secure payments via Stripe, and a modern, responsive user interface with dark mode support.
 

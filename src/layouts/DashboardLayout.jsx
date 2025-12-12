@@ -32,7 +32,7 @@ const DashboardLayout = () => {
               <Menu size={24} />
             </button>
             <span className="font-bold text-lg text-emerald-600">
-              LightHouse
+              BookCourier
             </span>
           </div>
         </div>

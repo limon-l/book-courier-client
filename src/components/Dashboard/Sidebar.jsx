@@ -111,7 +111,7 @@ const Sidebar = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="font-bold text-xl text-emerald-600 truncate">
-                LightHouse
+                BookCourier
               </motion.span>
             ) : (
               <motion.span
