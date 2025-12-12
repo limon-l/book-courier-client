@@ -1,6 +1,13 @@
 import { MapPin } from "lucide-react";
 
 const CoverageMap = () => {
+  const cities = [
+    { top: "30%", left: "40%", name: "Dhaka" },
+    { top: "60%", left: "60%", name: "Chittagong" },
+    { top: "25%", left: "70%", name: "Sylhet" },
+    { top: "40%", left: "20%", name: "Rajshahi" },
+  ];
+
   return (
     <section className="py-20 bg-slate-50 dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4">
@@ -25,19 +32,15 @@ const CoverageMap = () => {
               backgroundSize: "30px 30px",
             }}></div>
 
-          {[
-            { top: "30%", left: "40%", name: "Dhaka" },
-            { top: "60%", left: "60%", name: "Chittagong" },
-            { top: "25%", left: "70%", name: "Sylhet" },
-            { top: "40%", left: "20%", name: "Rajshahi" },
-          ].map((city, idx) => (
+          {cities.map((city, idx) => (
             <div
               key={idx}
-              className="absolute group"
+              className="absolute group cursor-pointer"
               style={{ top: city.top, left: city.left }}>
-              <div className="relative">
+              <div className="relative flex flex-col items-center">
                 <div className="absolute -inset-4 bg-emerald-500/30 rounded-full animate-ping"></div>
-                <div className="relative z-10 bg-white dark:bg-slate-900 p-2 rounded-full shadow-lg border-2 border-emerald-500 text-emerald-600">
+
+                <div className="relative z-10 bg-white dark:bg-slate-900 p-2 rounded-full shadow-lg border-2 border-emerald-500 text-emerald-600 hover:scale-110 transition-transform">
                   <MapPin
                     size={24}
                     className="fill-emerald-100 dark:fill-emerald-900"

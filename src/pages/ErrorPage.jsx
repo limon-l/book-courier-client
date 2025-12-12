@@ -10,13 +10,13 @@ const ErrorPage = () => {
           404
         </h1>
         <h2 className="text-2xl font-bold mb-4">Page Not Found</h2>
-        <p className="mb-8 text-slate-600 dark:text-slate-400">
+        <p className="mb-8 text-slate-600 dark:text-slate-400 leading-relaxed">
           The page you are looking for might have been removed, had its name
           changed, or is temporarily unavailable.
         </p>
         <Link
           to="/"
-          className="inline-block px-8 py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition duration-300 shadow-lg shadow-emerald-500/20">
+          className="inline-block px-8 py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition duration-300 shadow-lg shadow-emerald-500/20 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2">
           Back to Home
         </Link>
       </div>

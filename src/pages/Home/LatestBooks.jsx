@@ -9,49 +9,56 @@ const LatestBooks = () => {
   const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
-    const mockData = [
-      {
-        _id: "1",
-        title: "The Silent Patient",
-        author: "Alex Michaelides",
-        price: 12.99,
-        image:
-          "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop",
-        category: "Thriller",
-        rating: 4.8,
-      },
-      {
-        _id: "2",
-        title: "Educated",
-        author: "Tara Westover",
-        price: 15.5,
-        image:
-          "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop",
-        category: "Memoir",
-        rating: 4.9,
-      },
-      {
-        _id: "3",
-        title: "Becoming",
-        author: "Michelle Obama",
-        price: 18.0,
-        image:
-          "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=800&auto=format&fit=crop",
-        category: "Biography",
-        rating: 4.7,
-      },
-      {
-        _id: "4",
-        title: "Dune",
-        author: "Frank Herbert",
-        price: 14.99,
-        image:
-          "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=800&auto=format&fit=crop",
-        category: "Sci-Fi",
-        rating: 4.6,
-      },
-    ];
-    setBooks(mockData);
+    const fetchBooks = async () => {
+      try {
+        setBooks([
+          {
+            _id: "1",
+            title: "The Silent Patient",
+            author: "Alex Michaelides",
+            price: 12.99,
+            image:
+              "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop",
+            category: "Thriller",
+            rating: 4.8,
+          },
+          {
+            _id: "2",
+            title: "Educated",
+            author: "Tara Westover",
+            price: 15.5,
+            image:
+              "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop",
+            category: "Memoir",
+            rating: 4.9,
+          },
+          {
+            _id: "3",
+            title: "Becoming",
+            author: "Michelle Obama",
+            price: 18.0,
+            image:
+              "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=800&auto=format&fit=crop",
+            category: "Biography",
+            rating: 4.7,
+          },
+          {
+            _id: "4",
+            title: "Dune",
+            author: "Frank Herbert",
+            price: 14.99,
+            image:
+              "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=800&auto=format&fit=crop",
+            category: "Sci-Fi",
+            rating: 4.6,
+          },
+        ]);
+      } catch (err) {
+        console.error("Failed to fetch latest books:", err);
+      }
+    };
+
+    fetchBooks();
   }, [axiosPublic]);
 
   return (
@@ -65,6 +72,7 @@ const LatestBooks = () => {
         </h2>
         <div className="w-24 h-1.5 bg-emerald-500 rounded-full"></div>
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {books.map((book, i) => (
           <motion.div
@@ -92,6 +100,7 @@ const LatestBooks = () => {
                 </span>
               </div>
             </div>
+
             <div className="p-6 flex-grow flex flex-col">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">
                 {book.title}
@@ -106,6 +115,7 @@ const LatestBooks = () => {
                   ({Math.floor(Math.random() * 50) + 10} reviews)
                 </span>
               </div>
+
               <div className="mt-auto flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-700">
                 <span className="text-xl font-bold text-emerald-600">
                   ${book.price}
@@ -120,6 +130,7 @@ const LatestBooks = () => {
           </motion.div>
         ))}
       </div>
+
       <div className="text-center mt-12">
         <Link
           to="/books"

@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 const FaqSection = () => {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(null);
+
   const faqs = [
     {
       q: "How do I return a book?",
@@ -35,35 +36,43 @@ const FaqSection = () => {
           </h2>
         </div>
         <div className="space-y-4">
-          {faqs.map((faq, idx) => (
-            <div
-              key={idx}
-              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-              <button
-                onClick={() => setActive(active === idx ? null : idx)}
-                className="w-full flex items-center justify-between p-5 text-left font-semibold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                {faq.q}
-                {active === idx ? (
-                  <ChevronUp className="text-emerald-500" />
-                ) : (
-                  <ChevronDown className="text-slate-400" />
-                )}
-              </button>
-              <AnimatePresence>
-                {active === idx && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: "auto" }}
-                    exit={{ height: 0 }}
-                    className="overflow-hidden">
-                    <div className="p-5 pt-0 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/50">
-                      {faq.a}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+          {faqs.map((faq, idx) => {
+            const isOpen = active === idx;
+            return (
+              <div
+                key={idx}
+                className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition">
+                <button
+                  onClick={() => setActive(isOpen ? null : idx)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-${idx}`}
+                  className="w-full flex items-center justify-between p-5 text-left font-semibold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 transition focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg">
+                  {faq.q}
+                  {isOpen ? (
+                    <ChevronUp className="text-emerald-500" />
+                  ) : (
+                    <ChevronDown className="text-slate-400" />
+                  )}
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={`faq-${idx}`}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden">
+                      <div className="p-5 pt-0 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/50">
+                        {faq.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

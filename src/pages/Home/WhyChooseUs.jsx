@@ -2,6 +2,24 @@ import { motion } from "framer-motion";
 import { Truck, ShieldCheck, Clock, CheckCircle } from "lucide-react";
 
 const WhyChooseUs = () => {
+  const features = [
+    {
+      icon: <Truck size={28} />,
+      title: "Express Delivery",
+      desc: "Same-day delivery for local library books.",
+    },
+    {
+      icon: <ShieldCheck size={28} />,
+      title: "Sanitized & Secure",
+      desc: "Every book is cleaned and packaged safely.",
+    },
+    {
+      icon: <Clock size={28} />,
+      title: "Extended Borrowing",
+      desc: "Keep books for up to 30 days with auto-renew.",
+    },
+  ];
+
   return (
     <section className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4">
@@ -14,7 +32,7 @@ const WhyChooseUs = () => {
               Our Benefits
             </span>
             <h2 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
-              Smartest way to <br />{" "}
+              Smartest way to <br />
               <span className="text-emerald-600">borrow books.</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-400 mb-8 text-lg leading-relaxed">
@@ -22,24 +40,9 @@ const WhyChooseUs = () => {
               modern convenience. We handle the logistics so you can focus on
               reading.
             </p>
+
             <div className="space-y-8">
-              {[
-                {
-                  icon: <Truck size={28} />,
-                  title: "Express Delivery",
-                  desc: "Same-day delivery for local library books.",
-                },
-                {
-                  icon: <ShieldCheck size={28} />,
-                  title: "Sanitized & Secure",
-                  desc: "Every book is cleaned and packaged safely.",
-                },
-                {
-                  icon: <Clock size={28} />,
-                  title: "Extended Borrowing",
-                  desc: "Keep books for up to 30 days with auto-renew.",
-                },
-              ].map((feature, idx) => (
+              {features.map((feature, idx) => (
                 <div key={idx} className="flex gap-5 group">
                   <div className="flex-shrink-0 w-14 h-14 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
                     {feature.icon}
@@ -56,6 +59,7 @@ const WhyChooseUs = () => {
               ))}
             </div>
           </motion.div>
+
           <div className="relative lg:h-[600px] hidden lg:block">
             <div className="absolute top-10 right-10 w-4/5 h-4/5 bg-emerald-100 dark:bg-emerald-900/10 rounded-3xl -rotate-6"></div>
             <img
