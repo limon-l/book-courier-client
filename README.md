@@ -1,10 +1,7 @@
 # 📚 BookCourier (LightHouse) – Library-to-Home Delivery System
 
-![Project Banner](https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1000&auto=format&fit=crop)
-
 **Live Website:** [https://lighthouselibrary.vercel.app](https://lighthouselibrary.vercel.app)  
-**Server API:** [https://book-courier-server.vercel.app](https://book-courier-server.vercel.app)
-
+**Server API:** [https://book-courier-server.vercel.app](https://lighthouse-server-three.vercel.app/)
 ## 📖 Project Overview
 
 **BookCourier** (branded as LightHouse) is a sophisticated full-stack library management and delivery system. It bridges the gap between traditional libraries and modern convenience, allowing users to borrow or purchase books online and have them delivered to their doorstep.
@@ -108,7 +105,6 @@ Use these credentials to test the Stripe payment integration in the "Pay Now" se
 git clone [https://github.com/your-username/book-courier-client.git](https://github.com/your-username/book-courier-client.git)
 cd book-courier-client
 ```
-````
 
 ### 2\. Setup Client
 
