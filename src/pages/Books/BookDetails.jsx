@@ -75,6 +75,13 @@ const BookDetails = () => {
     }
   };
 
+  const handleOrderClick = () => {
+    if (!user) {
+      return toast.error("Please login to place an order");
+    }
+    setIsModalOpen(true);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -142,7 +149,7 @@ const BookDetails = () => {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleOrderClick}
               disabled={book.quantity === 0}
               className={`flex-1 py-4 rounded-xl font-bold text-lg shadow-lg transition-all ${
                 book.quantity > 0
