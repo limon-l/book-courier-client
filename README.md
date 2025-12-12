@@ -1,5 +1,3 @@
-Here is a professional and comprehensive **`README.md`** file for your **BookCourier / LightHouse** project. You can copy and paste this directly into your GitHub repository's root directory.
-
 ````markdown
 # 📚 BookCourier (LightHouse) – Library-to-Home Delivery System
 
