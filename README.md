@@ -1,6 +1,3 @@
-Here is a professional and comprehensive **`README.md`** file for your **BookCourier / LightHouse** project. You can copy and paste this directly into your GitHub repository's root directory.
-
-````markdown
 # 📚 BookCourier (LightHouse) – Library-to-Home Delivery System
 
 ![Project Banner](https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1000&auto=format&fit=crop)
@@ -181,6 +178,3 @@ To test Admin features locally:
 This project is open-source and available under the [MIT License](https://www.google.com/search?q=LICENSE).
 
 ```
-
-```
-````
